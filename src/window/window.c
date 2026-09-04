@@ -129,6 +129,16 @@ void get_window_pos(Window window, uint32_t *x, uint32_t *y)
     *y = state->y;
 }
 
+void get_window_framebuffer_size(Window window, uint32_t *width, uint32_t *height)
+{
+    WindowState *state = WINDOW_STATE(window);
+    int w, h;
+    
+    glfwGetFramebufferSize(state->window, &w, &h);
+    *width = w;
+    *height = h;
+}
+
 VkSurfaceKHR    get_vulkan_surface(Window window);
 
 // GLFW CALLBACKS
