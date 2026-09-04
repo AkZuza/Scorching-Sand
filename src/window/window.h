@@ -1,8 +1,8 @@
 #pragma once
-#include <common.h>
+#include <common/common.h>
 #include <vulkan/vulkan.h>
 
-typedef (void*) Window;
+typedef void* Window;
 
 enum WindowFlags 
 {
@@ -10,12 +10,14 @@ enum WindowFlags
     WINDOW_FLAG_ON_TOP      = 1<<1
 };
 
+typedef enum WindowFlags WindowFlags;
+
 struct WindowInfo 
 {
-    uint32_t        width,
-    uint32_t        height,
-    const char      *title,
-    WindowFlags     flags
+    uint32_t        width;
+    uint32_t        height;
+    const char      *title;
+    WindowFlags     flags;
 };
 
 Window          create_window(struct WindowInfo *info);
