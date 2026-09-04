@@ -106,8 +106,6 @@ const char* get_window_title(Window window)
 void set_window_size(Window window, uint32_t width, uint32_t height)
 {
     WindowState *state = WINDOW_STATE(window);
-    state->width = width;
-    state->height = height;
     glfwSetWindowSize(state->window, width, height);
 }
 
@@ -122,17 +120,13 @@ void set_window_pos(Window window, uint32_t x, uint32_t y)
 {
     WindowState *state = WINDOW_STATE(window);
     glfwSetWindowPos(state->window, x, y);
-    state->x = x;
-    state->y = y;
 }
 
 void get_window_pos(Window window, uint32_t *x, uint32_t *y)
 {
     WindowState *state = WINDOW_STATE(window);
-    int xpos, ypos;
-    glfwGetWindowPos(state->window, &xpos, &ypos);
-    *x = xpos;
-    *y = ypos;
+    *x = state->x;
+    *y = state->y;
 }
 
 VkSurfaceKHR    get_vulkan_surface(Window window);
