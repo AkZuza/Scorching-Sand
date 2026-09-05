@@ -40,8 +40,8 @@ void app_run(const App app)
     state->create_func();
     while(is_window_running(window))
     {
-        state->update_func(0.0);
         update_window(window);
+        state->update_func(0.0);
     }
     state->destroy_func();
 }
