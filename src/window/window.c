@@ -4,11 +4,11 @@
 #define MAX_WINDOW_TITLE_LENGTH 256
 #define WINDOW_STATE(window) ((WindowState*)(window))
 #define WINDOW_REF(window_state) ((Window)(window_state))
+#define WINDOW_INSTANCE(ptr) ((WindowInstance*)(ptr))
 
 struct WindowState
 {
     char title[MAX_WINDOW_TITLE_LENGTH];
-    GLFWwindow *window;
     uint32_t width;
     uint32_t height;
     int32_t x;
@@ -17,7 +17,14 @@ struct WindowState
 };
 typedef struct WindowState WindowState;
 
-void set_window_callbacks(WindowState *state);
+struct WindowInstance
+{
+    GLFWwindow *window;
+    WindowState *state;
+};
+typedef struct WindowInstance WindowInstance;
+
+void set_window_callbacks(WindowInstance *state);
 
 Window  create_window(struct WindowInfo *info)
 {
@@ -49,92 +56,103 @@ Window  create_window(struct WindowInfo *info)
     state->x = xpos;
     state->y = ypos;
     state->is_running = 1;
-    state->window = window;
     strncpy(
         state->title,
         info->title,
         MAX_WINDOW_TITLE_LENGTH
     );
 
-    set_window_callbacks(state);
+    WindowInstance *instance = malloc(sizeof(WindowInstance));
+    instance->window = window;
+    instance->state = state;
+
+    set_window_callbacks(instance);
     
-    return WINDOW_REF(state);
+    return WINDOW_REF(instance);
 }
 
 void destroy_window(Window window)
 {
-    WindowState *state = WINDOW_STATE(window);
+    WindowInstance *instance = WINDOW_INSTANCE(window);
+    WindowState *state = instance->state;
     if (state->is_running) close_window(window);
-    glfwDestroyWindow(state->window);
+    glfwDestroyWindow(instance->window);
     glfwTerminate();
     free(state);
+    free(instance);
 }
 
 void close_window(Window window)
 {
-    WindowState *state = WINDOW_STATE(window);
-    glfwSetWindowShouldClose(state->window, GLFW_TRUE); 
+    WindowInstance *inst = WINDOW_INSTANCE(window);
+    WindowState *state = inst->state;
+    glfwSetWindowShouldClose(inst->window, GLFW_TRUE); 
     state->is_running = false;
 }
 
 void update_window(Window window)
 {
-    WindowState *state = WINDOW_STATE(window);
+    WindowInstance *inst = WINDOW_INSTANCE(window);
     glfwPollEvents();
-    glfwSwapBuffers(state->window);
+    glfwSwapBuffers(inst->window);
 }
 
 int is_window_running(Window window)
 {
-    WindowState *state = WINDOW_STATE(window);
+    WindowInstance *inst = WINDOW_INSTANCE(window);
+    WindowState *state = inst->state;
     return state->is_running;
 }
 
 void set_window_title(Window window, const char* new_title)
 {
-    WindowState *state = WINDOW_STATE(window);
-    glfwSetWindowTitle(state->window, new_title);
+    WindowInstance *inst = WINDOW_INSTANCE(window);
+    WindowState *state = inst->state;
+    glfwSetWindowTitle(inst->window, new_title);
     strncpy(state->title, new_title, MAX_WINDOW_TITLE_LENGTH);
 }
 
 const char* get_window_title(Window window)
 {
-    WindowState *state = WINDOW_STATE(window);
+    WindowInstance *inst = WINDOW_INSTANCE(window);
+    WindowState *state = inst->state;
     return state->title;
 }
 
 void set_window_size(Window window, uint32_t width, uint32_t height)
 {
-    WindowState *state = WINDOW_STATE(window);
-    glfwSetWindowSize(state->window, width, height);
+    WindowInstance *inst = WINDOW_INSTANCE(window);
+    glfwSetWindowSize(inst->window, width, height);
 }
 
 void get_window_size(Window window, uint32_t *width, uint32_t *height)
 {
-    WindowState *state = WINDOW_STATE(window);
+    WindowInstance *inst = WINDOW_INSTANCE(window);
+    WindowState *state = inst->state;
     *width = state->width;
     *height = state->height;
 }
 
 void set_window_pos(Window window, uint32_t x, uint32_t y)
 {
-    WindowState *state = WINDOW_STATE(window);
-    glfwSetWindowPos(state->window, x, y);
+    WindowInstance *inst = WINDOW_INSTANCE(window);
+    glfwSetWindowPos(inst->window, x, y);
 }
 
 void get_window_pos(Window window, uint32_t *x, uint32_t *y)
 {
-    WindowState *state = WINDOW_STATE(window);
+    WindowInstance *inst = WINDOW_INSTANCE(window);
+    WindowState *state = inst->state;
     *x = state->x;
     *y = state->y;
 }
 
 void get_window_framebuffer_size(Window window, uint32_t *width, uint32_t *height)
 {
-    WindowState *state = WINDOW_STATE(window);
+    WindowInstance *inst = WINDOW_INSTANCE(window);
     int w, h;
     
-    glfwGetFramebufferSize(state->window, &w, &h);
+    glfwGetFramebufferSize(inst->window, &w, &h);
     *width = w;
     *height = h;
 }
@@ -162,9 +180,10 @@ void _glfw_pos_callback(GLFWwindow *window, int x, int y)
     state->y = y;
 }
 
-void set_window_callbacks(WindowState *state)
+void set_window_callbacks(WindowInstance *inst)
 {
-    GLFWwindow *window = state->window;
+    WindowState *state = inst->state;
+    GLFWwindow *window = inst->window;
     glfwSetWindowUserPointer(window, (void*)state);
 
     glfwSetWindowCloseCallback(window, _glfw_close_callback);
