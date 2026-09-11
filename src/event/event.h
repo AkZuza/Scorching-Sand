@@ -3,8 +3,23 @@
 #include <common/common.h>
 #include <window/window.h>
 
-typedef void (*OnEventCallback)(uint32_t, void*);
-typedef void (*OnSubscribedEventCallback)(uint32_t, void*, void*);
+enum Event 
+{
+    EVENT_WINDOW_CLOSE,
+    EVENT_WINDOW_RESIZE,
+    EVENT_WINDOW_MOVE,
+    EVENT_MOUSE_PRESS,
+    EVENT_MOUSE_SCROLL,
+    EVENT_MOUSE_RELEASE,
+    EVENT_MOUSE_MOVE,
+    EVENT_KEY_PRESS,
+    EVENT_KEY_RELEASE
+};
+
+typedef enum Event Event;
+typedef void (*OnEventCallback)(Event, void*);
+typedef void (*OnSubscribedEventCallback)(Event, void*, void*);
+ypedef uint32 SubId;
 
 struct EventManagerInitInfo 
 {
@@ -20,5 +35,5 @@ struct EventSubscribeInfo
 };
 
 void initialize_event_manager(struct EventManagerInitInfo *info);
-uint32_t subscribe_to_event(struct EventSubscribeInfo *info);
+SubId subscribe_to_event(struct EventSubscribeInfo *info);
 void unsubscribe_to_event(uint32_t subscrition_id);
