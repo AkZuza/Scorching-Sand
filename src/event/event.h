@@ -3,23 +3,23 @@
 #include <common/common.h>
 #include <window/window.h>
 
-enum Event 
+enum EventType 
 {
-    EVENT_WINDOW_CLOSE,
-    EVENT_WINDOW_RESIZE,
-    EVENT_WINDOW_MOVE,
-    EVENT_MOUSE_PRESS,
-    EVENT_MOUSE_SCROLL,
-    EVENT_MOUSE_RELEASE,
-    EVENT_MOUSE_MOVE,
-    EVENT_KEY_PRESS,
-    EVENT_KEY_RELEASE
+    EVENT_TYPE_WINDOW_CLOSE,
+    EVENT_TYPE_WINDOW_RESIZE,
+    EVENT_TYPE_WINDOW_MOVE,
+    EVENT_TYPE_MOUSE_PRESS,
+    EVENT_TYPE_MOUSE_SCROLL,
+    EVENT_TYPE_MOUSE_RELEASE,
+    EVENT_TYPE_MOUSE_MOVE,
+    EVENT_TYPE_KEY_PRESS,
+    EVENT_TYPE_KEY_RELEASE
 };
 
-typedef enum Event Event;
-typedef void (*OnEventCallback)(Event, void*);
-typedef void (*OnSubscribedEventCallback)(Event, void*, void*);
-ypedef uint32 SubId;
+typedef enum EventType EventType;
+typedef void (*OnEventCallback)(EventType, void*);
+typedef void (*OnSubscribedEventCallback)(EventType, void*, void*);
+typedef uint32_t SubId;
 
 struct EventManagerInitInfo 
 {
@@ -29,11 +29,13 @@ struct EventManagerInitInfo
 
 struct EventSubscribeInfo 
 {
-    uint32_t event;
+    EventType event_type;
     OnSubscribedEventCallback on_event_callback;
     void *data;
 };
 
-void initialize_event_manager(struct EventManagerInitInfo *info);
-SubId subscribe_to_event(struct EventSubscribeInfo *info);
-void unsubscribe_to_event(uint32_t subscrition_id);
+void em_initialize_event_manager(struct EventManagerInitInfo *info);
+SubId em_subscribe_to_event(struct EventSubscribeInfo *info);
+void em_unsubscribe_to_event(uint32_t subscrition_id);
+void em_fire_event(EventType, void *data);
+void em_poll_events();
