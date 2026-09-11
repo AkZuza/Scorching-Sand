@@ -20,7 +20,7 @@ void* vector_create(size_t elem_size, size_t count)
     if (vec == NULL) return NULL;
     void *data = GET_DATA(vec); 
     vec->elem_size = elem_size;
-    vec->count = 0;
+    vec->count = count;
     vec->capacity = count;
 
     return data;
