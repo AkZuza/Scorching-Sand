@@ -3,7 +3,7 @@
 #include <common/common.h>
 #include <window/window.h>
 
-enum EventType 
+enum EventType : uint64_t
 {
     EVENT_TYPE_WINDOW_CLOSE,
     EVENT_TYPE_WINDOW_RESIZE,
@@ -13,7 +13,8 @@ enum EventType
     EVENT_TYPE_MOUSE_RELEASE,
     EVENT_TYPE_MOUSE_MOVE,
     EVENT_TYPE_KEY_PRESS,
-    EVENT_TYPE_KEY_RELEASE
+    EVENT_TYPE_KEY_RELEASE,
+    EVENT_TYPE_TOTAL_EVENTS
 };
 
 typedef enum EventType EventType;
