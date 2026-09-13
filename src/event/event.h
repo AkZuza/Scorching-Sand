@@ -21,7 +21,7 @@ enum EventType : uint32_t
 typedef enum EventType EventType;
 typedef struct 
 {
-    uint32_t event_type;
+    EventType type;
     uint32_t idx;
 } SubId;
 
