@@ -22,10 +22,9 @@ static EventManagerState g_eventManagerState;
 
 void em_initialize_event_manager()
 {
-    Subscriber **event_subscribers = g_eventManagerState.event_subscribers;
     for (uint64_t i = 0; i < EVENT_TYPE_TOTAL_EVENTS; ++i)
     {
-        event_subscribers[i] = (Subscriber *)vector_create(sizeof(Subscriber), INITIAL_EVENT_SUBSCRIBERS_COUNT);
+        g_eventManagerState.event_subscribers[i] = (Subscriber *)vector_create(sizeof(Subscriber), INITIAL_EVENT_SUBSCRIBERS_COUNT);
     }
     queue_create(&g_eventManagerState.event_queue, sizeof(Event), 20);
 }
@@ -44,17 +43,16 @@ SubId em_subscribe_to_event(const EventSubscribeInfo *info)
 {
     Subscriber **event_subscribers = g_eventManagerState.event_subscribers;
     EventType type = info->event_type; 
-    Subscriber *subscribers = event_subscribers[type];
 
     Subscriber sub = {
         .on_event_callback = info->on_event_callback,
         .user_data = info->user_data
     };
-    vector_append(subscribers, &sub);
+    event_subscribers[type] = vector_append(event_subscribers[type], &sub);
     
     SubId id = {
         .type = type,
-        .idx = vector_count(subscribers)
+        .idx = vector_count(event_subscribers[type])
     };
 
     return id;
