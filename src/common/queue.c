@@ -19,7 +19,7 @@ void queue_free(Queue *queue)
 
 void queue_enqueue(Queue *queue, void *element)
 {
-    if (queue->count+1 == queue->capacity)
+    if (queue->count == queue->capacity)
     {
         if(queue_resize(queue, queue->capacity * 2) == 0)
             return;
@@ -52,10 +52,33 @@ void* queue_rear(Queue *queue)
 
 int queue_resize(Queue *queue, uint64_t new_size)
 {
-    void *new_data = realloc(queue->data, queue->elem_size*new_size);
-    if (new_data == NULL) 0;
+    void *new_data = malloc(queue->elem_size * new_size);
+
+    if (new_data == NULL)
+        return 0;
+
+    char *src = (char *)queue->data;
+    char *dst = (char *)new_data;
+
+    for (uint64_t i = 0; i < queue->count; i++)
+    {
+        uint64_t index =
+            (queue->front + i) % queue->capacity;
+
+        memcpy(
+            dst + i * queue->elem_size,
+            src + index * queue->elem_size,
+            queue->elem_size
+        );
+    }
+
+    free(queue->data);
+
     queue->data = new_data;
     queue->capacity = new_size;
+    queue->front = 0;
+    queue->rear = queue->count;
+
     return 1;
 }
 
