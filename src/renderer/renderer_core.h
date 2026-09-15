@@ -12,6 +12,7 @@ typedef struct RendererCore
     VkDevice                device;
     VkSwapchainKHR          swapchain;
     VkSurfaceKHR            surface;
+    uint32_t                graphics_family_idx;
 } RendererCore;
 
 typedef struct RendererCoreInit
