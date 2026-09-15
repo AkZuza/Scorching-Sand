@@ -1,4 +1,5 @@
 #include "app.h"
+#include <event/event.h>
 
 #define APP_STATE(app) ((AppState*)(app))
 #define APP_REF(state) ((App)(state))
@@ -21,6 +22,8 @@ App create_app(const struct AppInfo *info)
     state->update_func = info->update_func;
     state->destroy_func = info->destroy_func;
     state->window = window;
+
+    em_initialize_event_manager();
 
     return APP_REF(state);
 }

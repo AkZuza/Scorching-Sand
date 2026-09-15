@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <scorching_sand.h>
+#include <common/queue.h>
 
 void on_create();
 void on_update(double);
@@ -25,7 +26,6 @@ int main(int argc, char** argv)
     g_app = create_app(&appInfo);
     app_run(g_app);
     destroy_app(g_app);
-
     return 0;
 }
 

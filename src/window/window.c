@@ -1,5 +1,6 @@
 #include "window.h"
 #include <GLFW/glfw3.h>
+#include <event/event.h>
 
 #define MAX_WINDOW_TITLE_LENGTH 256
 #define WINDOW_STATE(window) ((WindowState*)(window))
@@ -94,6 +95,7 @@ void update_window(Window window)
 {
     WindowInstance *inst = WINDOW_INSTANCE(window);
     glfwPollEvents();
+    em_update();
     glfwSwapBuffers(inst->window);
 }
 
@@ -164,6 +166,10 @@ void _glfw_close_callback(GLFWwindow *window)
 {
     WindowState *state = WINDOW_STATE(glfwGetWindowUserPointer(window));
     state->is_running = false;
+    Event event = { 
+        .type = EVENT_TYPE_WINDOW_CLOSE
+    };
+    em_queue_event(&event);
 }
 
 void _glfw_size_callback(GLFWwindow *window, int width, int height)
@@ -171,6 +177,13 @@ void _glfw_size_callback(GLFWwindow *window, int width, int height)
     WindowState *state = WINDOW_STATE(glfwGetWindowUserPointer(window));
     state->width = width;
     state->height = height;
+
+    Event event = {
+        .type = EVENT_TYPE_WINDOW_RESIZE
+    };
+    event.data.window_size.width = width;
+    event.data.window_size.height = height;
+    em_queue_event(&event);
 }
 
 void _glfw_pos_callback(GLFWwindow *window, int x, int y)
@@ -178,6 +191,13 @@ void _glfw_pos_callback(GLFWwindow *window, int x, int y)
     WindowState *state = WINDOW_STATE(glfwGetWindowUserPointer(window));
     state->x = x;
     state->y = y;
+    
+    Event event = {
+        .type = EVENT_TYPE_WINDOW_MOVE
+    };
+    event.data.window_pos.x = x;
+    event.data.window_pos.y = y;
+    em_queue_event(&event);
 }
 
 void set_window_callbacks(WindowInstance *inst)
