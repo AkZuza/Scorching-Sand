@@ -39,6 +39,7 @@ Window  create_window(struct WindowInfo *info)
 
     glfwWindowHint(GLFW_RESIZABLE, resizable);
     glfwWindowHint(GLFW_FLOATING, stay_on_top);
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
     GLFWwindow *window = glfwCreateWindow(
             info->width,

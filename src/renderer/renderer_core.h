@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <window/window.h>
 #include <vulkan/vulkan.h>
 
 #define VK_RESULT_CHECK(result)
@@ -17,7 +18,6 @@ typedef struct RendererCore
 
 typedef struct RendererCoreInit
 {
-    VkSurfaceKHR                    surface;
     uint32_t                        instance_extension_count;
     const char                      **instance_extensions;
     uint32_t                        device_extension_count;
@@ -26,5 +26,5 @@ typedef struct RendererCoreInit
     const char                      **layers;
 } RendererCoreInit;
 
-void rc_initialize(RendererCore *renderer_core, const RendererCoreInit *init);
+void rc_initialize(RendererCore *renderer_core, const RendererCoreInit *init, Window window);
 void rc_destroy(const RendererCore *renderer_core);
