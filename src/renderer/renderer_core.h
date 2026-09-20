@@ -24,7 +24,6 @@ typedef struct RendererCoreInit
     const char                      **device_extensions;
     uint32_t                        layer_count;
     const char                      **layers;
-    uint32_t                        graphics_family_idx;
 } RendererCoreInit;
 
 void rc_initialize(RendererCore *renderer_core, const RendererCoreInit *init);
