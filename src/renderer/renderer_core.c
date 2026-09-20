@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <memory.h>
 #include <string.h>
+#include <vulkan/vk_platform.h>
 #include <vulkan/vulkan_core.h>
 
 #define DEVICE_QUEUE_COUNT 1
@@ -36,6 +37,12 @@ void rc_initialize(RendererCore *renderer_core, const RendererCoreInit *init)
     renderer_core->graphics_family_idx = graphics_family_idx;
     renderer_core->surface = init->surface;
     renderer_core->instance = instance;
+}
+
+void rc_destroy(const RendererCore *renderer_core)
+{
+    vkDestroyDevice(renderer_core->device, NULL);
+    vkDestroyInstance(renderer_core->instance, NULL);
 }
 
 static VkInstance _create_instance(uint32_t extension_count, const char **extensions, uint32_t layer_count, const char **layers)
