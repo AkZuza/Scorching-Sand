@@ -1,6 +1,7 @@
 #pragma once
 
 #include <window/window.h>
+#include <renderer/renderer.h>
 
 typedef void* App;
 typedef void (*AppOnCreateFunction)(void);
