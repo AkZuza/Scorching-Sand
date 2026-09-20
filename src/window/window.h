@@ -32,4 +32,3 @@ void            get_window_size(Window window, uint32_t *width, uint32_t *height
 void            set_window_pos(Window window, uint32_t x, uint32_t y);
 void            get_window_pos(Window window, uint32_t *x, uint32_t *y);
 void            get_window_framebuffer_size(Window window, uint32_t *width, uint32_t *height);
-VkSurfaceKHR    get_vulkan_surface(Window window);

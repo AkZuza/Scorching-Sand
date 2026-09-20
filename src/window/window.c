@@ -1,6 +1,9 @@
 #include "window.h"
+#define GLFW_PLATFORM_WAYLAND
+#include <GLFW/glfw3native.h>
 #include <GLFW/glfw3.h>
 #include <event/event.h>
+#include <vulkan/vulkan_core.h>
 
 #define MAX_WINDOW_TITLE_LENGTH 256
 #define WINDOW_STATE(window) ((WindowState*)(window))
@@ -159,8 +162,6 @@ void get_window_framebuffer_size(Window window, uint32_t *width, uint32_t *heigh
     *height = h;
 }
 
-VkSurfaceKHR    get_vulkan_surface(Window window);
-
 // GLFW CALLBACKS
 void _glfw_close_callback(GLFWwindow *window)
 {
@@ -210,3 +211,4 @@ void set_window_callbacks(WindowInstance *inst)
     glfwSetWindowSizeCallback(window, _glfw_size_callback);
     glfwSetWindowPosCallback(window, _glfw_pos_callback);
 }
+
