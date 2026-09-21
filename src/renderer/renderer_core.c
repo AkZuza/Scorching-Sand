@@ -2,7 +2,6 @@
 
 #include <stdlib.h>
 #include <memory.h>
-#include <string.h>
 #include <vulkan/vk_platform.h>
 #include <vulkan/vulkan_core.h>
 #include <GLFW/glfw3.h>
