@@ -1,7 +1,8 @@
 #include "app.h"
+#include "renderer/renderer_core.h"
 #include "window/window.h"
 #include <event/event.h>
-#include <renderer/renderer_core.h>
+#include <renderer/renderer.h>
 #include <vulkan/vulkan_core.h>
 
 #define APP_STATE(app) ((AppState*)(app))
@@ -13,7 +14,7 @@ struct AppState
     AppOnUpdateFunction     update_func;
     AppOnDestroyFunction    destroy_func;
     Window                  window;
-    RendererCore            renderer_core; // TO BE REMOVED after implementing Renderer
+    Renderer                renderer;
 };
 typedef struct AppState AppState;
 
@@ -28,21 +29,9 @@ App create_app(const struct AppInfo *info)
     state->window = window;
 
     em_initialize_event_manager();
-    
-    // Remove this section after implementing RendererCore
-    {
-        const uint32_t instance_extension_count = 2;
-        const char *instance_extensions[] = {
-            VK_KHR_SURFACE_EXTENSION_NAME,
-            "VK_KHR_wayland_surface"
-        };
 
-        RendererCoreInit rc_init = {
-            .instance_extension_count = instance_extension_count,
-            .instance_extensions = instance_extensions
-        };
-        rc_initialize(&state->renderer_core, &rc_init, window);
-    }
+    state->renderer.window = window;
+    r_initialize(&state->renderer);
 
     return APP_REF(state);
 }
@@ -50,6 +39,7 @@ App create_app(const struct AppInfo *info)
 void destroy_app(const App app)
 {
     AppState *state = APP_STATE(app);
+    r_destroy(&state->renderer);
     destroy_window(state->window);
     free(state);
 }
