@@ -8,6 +8,8 @@
 #include <vulkan/vulkan.h>
 #include <GLFW/glfw3.h>
 
+Renderer *g_renderer = NULL;
+
 void r_initialize(Renderer *renderer)
 {
     const uint32_t instance_extension_count = 2;
@@ -22,9 +24,16 @@ void r_initialize(Renderer *renderer)
     };
 
     rc_initialize(&renderer->core, &init, renderer->window);
+
+    g_renderer = renderer;
 }
 
 void r_destroy(const Renderer *renderer)
 {
     rc_destroy(&renderer->core);
+}
+
+const Renderer* r_get_renderer()
+{
+    return g_renderer;
 }
