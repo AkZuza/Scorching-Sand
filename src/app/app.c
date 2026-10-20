@@ -1,5 +1,4 @@
 #include "app.h"
-#include "renderer/renderer_core.h"
 #include "window/window.h"
 #include <event/event.h>
 #include <renderer/renderer.h>
@@ -14,7 +13,7 @@ struct AppState
     AppOnUpdateFunction     update_func;
     AppOnDestroyFunction    destroy_func;
     Window                  window;
-    Renderer                renderer;
+    Renderer*                renderer;
 };
 typedef struct AppState AppState;
 
@@ -27,11 +26,10 @@ App create_app(const struct AppInfo *info)
     state->update_func = info->update_func;
     state->destroy_func = info->destroy_func;
     state->window = window;
+    state->renderer = r_create_renderer(window);
 
     em_initialize_event_manager();
-
-    state->renderer.window = window;
-    r_initialize(&state->renderer);
+    r_initialize(state->renderer);
 
     return APP_REF(state);
 }
@@ -39,7 +37,7 @@ App create_app(const struct AppInfo *info)
 void destroy_app(const App app)
 {
     AppState *state = APP_STATE(app);
-    r_destroy(&state->renderer);
+    r_destroy(state->renderer);
     destroy_window(state->window);
     free(state);
 }

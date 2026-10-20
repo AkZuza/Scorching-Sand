@@ -1,6 +1,6 @@
 #include "renderer.h"
-#include "renderer/renderer_core.h"
 #include <vulkan/vulkan_core.h>
+#include <log/log.h>
 
 #define GLFW_PLATFORM_WAYLAND
 #define GLFW_INCLUDE_VULKAN
@@ -9,6 +9,26 @@
 #include <GLFW/glfw3.h>
 
 Renderer *g_renderer = NULL;
+
+typedef struct RendererState {
+    
+} RendererState;
+
+void _create_basic_renderer(Renderer const *renderer);
+
+Renderer* r_create_renderer(const Window window)
+{
+    if (g_renderer != NULL)
+    {
+        LOG_WARN("Renderer creation: Creating more than instance is invalid\n");
+        return NULL;
+    }
+
+    Renderer* renderer = malloc(sizeof(Renderer) + sizeof(RendererState));
+    renderer->window = window;
+    g_renderer = renderer;
+    return renderer;
+}
 
 void r_initialize(Renderer *renderer)
 {
@@ -24,13 +44,12 @@ void r_initialize(Renderer *renderer)
     };
 
     rc_initialize(&renderer->core, &init, renderer->window);
-
-    g_renderer = renderer;
 }
 
 void r_destroy(const Renderer *renderer)
 {
     rc_destroy(&renderer->core);
+    free((void*)renderer);
 }
 
 const Renderer* r_get_renderer()
