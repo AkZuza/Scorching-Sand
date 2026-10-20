@@ -5,6 +5,7 @@
 #include <vulkan/vk_platform.h>
 #include <vulkan/vulkan_core.h>
 #include <GLFW/glfw3.h>
+#include <log/log.h>
 
 #define DEVICE_QUEUE_COUNT 1
 
@@ -41,6 +42,8 @@ void rc_initialize(RendererCore *renderer_core, const RendererCoreInit *init, Wi
     renderer_core->graphics_family_idx = graphics_family_idx;
     renderer_core->surface = surface;
     renderer_core->instance = instance;
+
+    LOG_INFO("Initialized Renderer Core\n");
 }
 
 void rc_destroy(const RendererCore *renderer_core)
@@ -79,11 +82,14 @@ static VkInstance _create_instance(uint32_t extension_count, const char **extens
 
     VK_RESULT_CHECK(result);
 
+    LOG_INFO("Created Vulkan Instance\n");
+
     return instance;
 }
 
 static VkPhysicalDevice _select_physical_device(uint32_t count, VkPhysicalDevice *physical_devices)
 {
+    LOG_INFO("Selected Physical Device\n");
     return physical_devices[0];
 }
 
@@ -111,6 +117,7 @@ static uint32_t _get_suitable_queue_family_index(VkPhysicalDevice physical_devic
     }
 
     free(props);
+    LOG_INFO("Selected suitable family queue\n");
     return graphics_family_idx;
 }
 
@@ -139,6 +146,8 @@ static VkDevice _create_logical_device(uint32_t queue_idx_count, uint32_t *queue
     VkResult result = vkCreateDevice(physical_device, &createInfo, NULL, &device);
     VK_RESULT_CHECK(result);
 
+    LOG_INFO("Created logical device\n");
+
     return device;
 }
 
@@ -150,6 +159,8 @@ static VkSurfaceKHR _create_window_surface(VkInstance instance, GLFWwindow *wind
     {
         return NULL;
     }
+
+    LOG_INFO("Created Vulkan surface\n");
 
     return surface;
 }
