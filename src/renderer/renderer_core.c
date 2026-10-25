@@ -127,6 +127,23 @@ static VkDevice _create_logical_device(uint32_t queue_idx_count, uint32_t *queue
     VkDeviceQueueCreateInfo *infos = calloc(queue_idx_count, sizeof(VkDeviceQueueCreateInfo)); 
     float priority = 1.0f;
 
+    VkPhysicalDeviceRobustness2FeaturesKHR robustness2Features = {
+        .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ROBUSTNESS_2_FEATURES_KHR,
+        .nullDescriptor = VK_TRUE,
+    };
+
+    VkPhysicalDeviceSynchronization2Features sync_features = {
+        .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SYNCHRONIZATION_2_FEATURES,
+        .synchronization2 = VK_TRUE,
+        .pNext = &robustness2Features
+    };
+
+    VkPhysicalDeviceDynamicRenderingFeatures dynamicRenderingFeatures = {
+        .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES,
+        .dynamicRendering = VK_TRUE,
+        .pNext = &sync_features
+    };
+
     for (uint32_t i = 0; i < queue_idx_count; ++i)
     {
         infos[i].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
@@ -140,7 +157,8 @@ static VkDevice _create_logical_device(uint32_t queue_idx_count, uint32_t *queue
         .enabledExtensionCount = extension_count,
         .ppEnabledExtensionNames = extensions,
         .pQueueCreateInfos = infos,
-        .queueCreateInfoCount = queue_idx_count
+        .queueCreateInfoCount = queue_idx_count,
+        .pNext = &dynamicRenderingFeatures
     };
     
     VkResult result = vkCreateDevice(physical_device, &createInfo, NULL, &device);

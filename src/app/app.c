@@ -52,6 +52,9 @@ void app_run(const App app)
     {
         update_window(window);
         state->update_func(0.0);
+
+        r_begin_frame();
+        r_end_frame();
     }
     state->destroy_func();
 }
